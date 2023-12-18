@@ -18,6 +18,8 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/AFLr)](https://CRAN.R-project.org/package=AFLr)
+[![R-CMD-check](https://github.com/jimmyday12/AFLr/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jimmyday12/AFLr/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/jimmyday12/AFLr/branch/master/graph/badge.svg)](https://app.codecov.io/gh/jimmyday12/AFLr?branch=master)
 <!-- badges: end -->
 
 The goal of AFLr is to ...
