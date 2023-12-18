@@ -6,17 +6,17 @@ fetch_player <- function(season_provider_id, cookie) {
 
   query <- list(
     seasonId = season_provider_id,
-    pageSize = 50)
+    pageSize = 1000)
 
 
   resp <- afl_api(resources,
                   query = query,
                   headers = list("X-Media-Mis-Token" = cookie),
                   base_url = "https://api.afl.com.au/",
-                  response = "json")
+                  response = "string")
 
   jsonlite::fromJSON(resp, flatten = TRUE) |>
-    purrr::pluck("venues") |>
+    purrr::pluck("players") |>
     tibble::as_tibble()
 
 }
