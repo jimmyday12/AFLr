@@ -10,8 +10,15 @@
 #' @export
 #'
 #' @examples
-afl_api <- function(resource, headers = list(), query = list(),
-                    base_url = NULL, method = NULL, verbose = FALSE) {
+afl_api <- function(
+    resource,
+    ...,
+    headers = list(),
+    query = list(),
+    base_url = NULL,
+    method = NULL,
+    verbose = FALSE,
+    response = "json") {
 
   if(is.null(base_url)) {
     url <- "https://aflapi.afl.com.au"
@@ -19,6 +26,10 @@ afl_api <- function(resource, headers = list(), query = list(),
     url <- base_url
   }
 
+  response <- rlang::arg_match(
+    response,
+    c("json", "string")
+  )
 
   # General Request
   req <- httr2::request(url) |>
@@ -36,8 +47,15 @@ afl_api <- function(resource, headers = list(), query = list(),
 
   if(verbose) print(req)
 
+  resp <- req |>
+    httr2::req_perform()
+
   # Perform Request
-  req |>
-    httr2::req_perform() |>
+  if(response == "json") {
+    resp |>
     httr2::resp_body_json()
+  } else {
+    resp |>
+      httr2::resp_body_string()
+  }
 }

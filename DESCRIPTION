@@ -19,4 +19,5 @@ Imports:
     dplyr,
     httr2,
     purrr,
+    tibble,
     tidyr
