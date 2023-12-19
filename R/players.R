@@ -1,7 +1,11 @@
 # https://api.afl.com.au/cfs/afl/players?pageSize=20&pageNum=1&sortBy=name&seasonId=CD_S2023014&teamIds=&playerPosition=
 
-fetch_player <- function(season_provider_id, cookie) {
+fetch_players <- function(
+    season_provider_id = NULL,
+    cookie = NULL,
+    verbose = verbose) {
 
+  if(is.null(cookie)) cookie <- fetch_cookie()
   resources <- c("cfs", "afl", "players")
 
   query <- list(
@@ -9,14 +13,13 @@ fetch_player <- function(season_provider_id, cookie) {
     pageSize = 1000)
 
 
-  resp <- afl_api(resources,
+  resps <- afl_api(resources,
                   query = query,
                   headers = list("X-Media-Mis-Token" = cookie),
-                  base_url = "https://api.afl.com.au/",
-                  response = "string")
+                  base_url = "https://api.afl.com.au/")
 
-  jsonlite::fromJSON(resp, flatten = TRUE) |>
-    purrr::pluck("players") |>
-    tibble::as_tibble()
+
+  resps |>
+    afl_api_resp_data(pluck_names = "players")
 
 }

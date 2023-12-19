@@ -6,6 +6,8 @@ fetch_cookie <- function() {
                          base_url = "https://api.afl.com.au/",
                          method = "POST")
 
-  cookie_resp$token
+  cookie_resp[[1]] |>
+    httr2::resp_body_json() |>
+    purrr::pluck("token")
 
 }

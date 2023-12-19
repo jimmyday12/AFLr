@@ -7,15 +7,15 @@
 fetch_comps <- function() {
 
   resources <- c("afl", "v2", "competitions")
-  query <- list(pageSize = 50)
 
-  resp <- afl_api(resources,
-                  query = query,
-                  response = "string")
+  query <- list(
+    pageSize = 100)
 
-  jsonlite::fromJSON(resp, flatten = TRUE) |>
-    purrr::pluck("competitions") |>
-    tibble::as_tibble()
+  resps <- afl_api(resources)
+
+  resps |>
+    afl_api_resp_data(pluck_names = "competitions")
 
 }
+
 

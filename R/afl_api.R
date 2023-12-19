@@ -15,10 +15,9 @@ afl_api <- function(
     ...,
     headers = list(),
     query = list(),
-    base_url = NULL,
     method = NULL,
-    verbose = FALSE,
-    response = "json") {
+    base_url = NULL,
+    verbose = FALSE) {
 
   if(is.null(base_url)) {
     url <- "https://aflapi.afl.com.au"
@@ -26,18 +25,12 @@ afl_api <- function(
     url <- base_url
   }
 
-  response <- rlang::arg_match(
-    response,
-    c("json", "string")
-  )
-
   # General Request
   req <- httr2::request(url) |>
     httr2::req_url_path_append(resource) |>
     httr2::req_headers(!!!headers) |>
     httr2::req_url_query(!!!query) |>
-    httr2::req_user_agent("AFLr (http://my.package.web.site)") |>
-    httr2::req_progress()
+    httr2::req_user_agent("AFLr (http://my.package.web.site)")
 
   # Custom Method
   if(!is.null(method)) {
@@ -47,15 +40,47 @@ afl_api <- function(
 
   if(verbose) print(req)
 
-  resp <- req |>
-    httr2::req_perform()
+  # Perform iterative requests
 
-  # Perform Request
-  if(response == "json") {
-    resp |>
-    httr2::resp_body_json()
-  } else {
-    resp |>
-      httr2::resp_body_string()
+  # Create helper function for performing request
+  num_pages <- function(resp) {
+    resp_json <- resp_body_json(resp)
+    resp_json$meta$pagination$numPages
   }
+
+  is_complete <- function(resp) {
+    resp_json <- resp_body_json(resp)
+    is.null(resp_json$meta$pagination$numPages)
+  }
+
+  # Perform requests
+  resp <- httr2::req_perform_iterative(
+    req,
+    next_req = httr2::iterate_with_offset(
+      "page",
+      resp_pages = num_pages,
+      resp_complete = is_complete),
+    max_reqs = Inf)
+
 }
+
+afl_api_resp_data <- function(resps, pluck_names = NULL) {
+
+  if(is.null(pluck_names)) {
+    x <- httr2::resp_body_json(resps[[1]])
+    pluck_names <- names(x)[2]
+  }
+
+  # Iterate over data and return tibble
+  resps |>
+    httr2::resps_successes() |>
+    httr2::resps_data(function(resp, pluck_list = pluck_names) {
+      httr2::resp_body_string(resp) |>
+        jsonlite::fromJSON(flatten = TRUE) |>
+        purrr::pluck(!!!pluck_list) |>
+        purrr::list_modify(byes = rlang::zap()) |>
+        tibble::as_tibble()
+  })
+
+}
+

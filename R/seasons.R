@@ -6,20 +6,19 @@
 #' @export
 #'
 #' @examples
-fetch_compSeasons <- function(comp_id) {
+fetch_compSeasons <- function(comp_id, verbose = FALSE) {
 
 
   resources <- c("afl", "v2", "competitions", comp_id, "compseasons")
 
-  query <- list(pageSize = 50)
+  query <- list(
+    pageSize = 100)
 
-  resp <- afl_api(resources,
-                  response = "string")
+  resps <- afl_api(resources,
+                   query = query,
+                   verbose = verbose)
 
-  jsonlite::fromJSON(resp, flatten = TRUE) |>
-    purrr::pluck("compSeasons") |>
-    tibble::as_tibble()
-
-
+  resps |>
+    afl_api_resp_data(pluck_names = "compSeasons")
 
 }
