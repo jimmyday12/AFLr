@@ -1,6 +1,7 @@
-# https://aflapi.afl.com.au/afl/v2/venues?compSeasonId=52&pageSize=100
 
-fetch_venues <- function(compSeason_id) {
+
+fetch_venues <- function(compSeason_id = NULL,
+                         verbose = FALSE) {
 
   resources <- c("afl", "v2", "venues")
 
@@ -9,10 +10,12 @@ fetch_venues <- function(compSeason_id) {
     pageSize = 100)
 
 
-  resp <- afl_api(resources, query = query, response = "string")
+  resps <- afl_api(resources,
+                  query = query,
+                  verbose = verbose)
 
-  jsonlite::fromJSON(resp, flatten = TRUE) |>
-    purrr::pluck("venues") |>
-    tibble::as_tibble()
+  resps |>
+    afl_api_resp_data(pluck_names = "venues")
 
 }
+
