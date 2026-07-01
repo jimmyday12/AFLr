@@ -1,6 +1,7 @@
 # https://aflapi.afl.com.au/afl/v2/matches?pageSize=300&competitionId=1&compSeasonId=52&roundNumber=20
 
 fetch_matches <- function(
+    ...,
     comp_id = NULL,
     compSeason_id = NULL,
     round_number = NULL,

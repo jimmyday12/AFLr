@@ -1,7 +1,9 @@
 
 
-fetch_venues <- function(compSeason_id = NULL,
-                         verbose = FALSE) {
+fetch_venues <- function(
+    ...,
+    compSeason_id = NULL,
+    verbose = FALSE) {
 
   resources <- c("afl", "v2", "venues")
 

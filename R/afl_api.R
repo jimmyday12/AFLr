@@ -44,12 +44,12 @@ afl_api <- function(
 
   # Create helper function for performing request
   num_pages <- function(resp) {
-    resp_json <- resp_body_json(resp)
+    resp_json <- httr2::resp_body_json(resp)
     resp_json$meta$pagination$numPages
   }
 
   is_complete <- function(resp) {
-    resp_json <- resp_body_json(resp)
+    resp_json <- httr2::resp_body_json(resp)
     is.null(resp_json$meta$pagination$numPages)
   }
 

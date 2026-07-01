@@ -9,11 +9,14 @@
 #' @export
 #'
 #' @examples
-find_comps_id <- function(comp, ...,
-                          .id_type = "id", .index = 1) {
+find_comps_id <- function(
+    comp,
+    ...,
+    id_type = "id",
+    index = 1) {
 
   rlang::arg_match(
-    .id_type,
+    id_type,
     c("id", "providerId"))
 
   comps <- fetch_comps()
@@ -24,33 +27,37 @@ find_comps_id <- function(comp, ...,
 
   comps |>
     dplyr::filter(code == comp) |>
-    dplyr::slice(.index) |>
-    dplyr::pull(!!.id_type)
+    dplyr::slice(index) |>
+    dplyr::pull(!!id_type)
 
 }
 
 
 
-find_compSeason_id <- function(comp, season, ...,
-                          .id_type = "id", .index = 1,
-                          .comp_id_type = "id", .comp_index = 1) {
+find_compSeason_id <- function(
+    comp,
+    season,
+    ...,
+    id_type = "id",
+    index = 1,
+    comp_index = 1) {
 
   rlang::arg_match(
-    .id_type,
+    id_type,
     c("id", "providerId"))
 
   comp_id <- find_comps_id(comp,
-                           .id_type = .comp_id_type,
-                           .index = .comp_index)
+                           id_type = "id",
+                           index = comp_index)
 
   compSeasons <- fetch_compSeasons(comp_id)
 
   compSeasons <- compSeasons |>
     dplyr::filter(!stringr::str_detect(.data$name, "Legacy")) |>
-    dplyr::mutate(season = as.numeric(gsub("^.*([0-9]{4}).*", "\\1", .data$name)))
+    dplyr::mutate(year = as.numeric(gsub("^.*([0-9]{4}).*", "\\1", .data$name)))
 
-  min_seas <- min(compSeasons$season)
-  max_seas <- max(compSeasons$season)
+  min_seas <- min(compSeasons$year)
+  max_seas <- max(compSeasons$year)
 
   if(!dplyr::between(season, min_seas, max_seas)) {
     cli::cli_abort(c(
@@ -62,35 +69,34 @@ find_compSeason_id <- function(comp, season, ...,
   }
 
   compSeasons |>
-    dplyr::filter(season == season) |>
-    dplyr::slice(.index) |>
-    dplyr::pull(!!.id_type)
+    dplyr::filter(year == season) |>
+    dplyr::slice(index) |>
+    dplyr::pull(!!id_type)
 
 }
 
 
 
-find_round_id <- function(comp,
-                          season,
-                          round,
-                          ...,
-                          .id_type = "id",
-                          .index = 1,
-                          .comp_id_type = "id",
-                          .comp_index = 1,
-                          .season_id_type = "id",
-                          .season_index = 1) {
+find_round_id <- function(
+    comp,
+    season,
+    round,
+    ...,
+    id_type = "id",
+    index = 1,
+    comp_index = 1,
+    season_index = 1) {
 
   rlang::arg_match(
-    .id_type,
+    id_type,
     c("id", "providerId"))
 
   compSeason_id <- find_compSeason_id(comp,
                                       season,
-                                      .id_type = .season_id_type,
-                                      .index = .season_index,
-                                      .comp_id_type = .comp_id_type,
-                                      .comp_index = .comp_index)
+                                      id_type = "id",
+                                      index = season_index,
+                                      comp_id_type = "id",
+                                      comp_index = comp_index)
 
 
   rounds <- fetch_rounds(compSeason_id)
@@ -110,7 +116,7 @@ find_round_id <- function(comp,
 
   rounds |>
     dplyr::filter(roundNumber == round) |>
-    dplyr::slice(.index) |>
-    dplyr::pull(!!.id_type)
+    dplyr::slice(index) |>
+    dplyr::pull(!!id_type)
 
 }

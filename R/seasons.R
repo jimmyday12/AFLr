@@ -6,7 +6,10 @@
 #' @export
 #'
 #' @examples
-fetch_compSeasons <- function(comp_id, verbose = FALSE) {
+fetch_compSeasons <- function(
+    comp_id,
+    ...,
+    verbose = FALSE) {
 
 
   resources <- c("afl", "v2", "competitions", comp_id, "compseasons")

@@ -4,7 +4,7 @@
 #' @export
 #'
 #' @examples
-fetch_comps <- function() {
+fetch_comps <- function(...) {
 
   resources <- c("afl", "v2", "competitions")
 

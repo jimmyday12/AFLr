@@ -1,5 +1,8 @@
 
-fetch_rounds<- function(compSeason_id, verbose = FALSE) {
+fetch_rounds<- function(
+    compSeason_id,
+    ...,
+    verbose = FALSE) {
 
   resources <- c("afl", "v2", "compseasons", compSeason_id, "rounds")
 

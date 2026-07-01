@@ -1,7 +1,9 @@
 # https://aflapi.afl.com.au/afl/v2/teams?compSeasonId=52&pageSize=100
 
-fetch_teams <- function(compSeason_id = NULL,
-                        verbose = FALSE) {
+fetch_teams <- function(
+    ...,
+    compSeason_id = NULL,
+    verbose = FALSE) {
 
   resources <- c("afl", "v2", "teams")
 
@@ -14,7 +16,7 @@ fetch_teams <- function(compSeason_id = NULL,
                   query = query,
                   verbose = verbose)
 
-  resps |>
+  resp |>
     afl_api_resp_data(pluck_names = "teams")
 
 }

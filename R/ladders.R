@@ -1,6 +1,7 @@
 # https://aflapi.afl.com.au/afl/v2/compseasons/52/ladders
 
 fetch_ladder <- function(compSeason_id,
+                         ...,
                          round_id = NULL,
                          verbose = FALSE) {
 
